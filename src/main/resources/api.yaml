@@ -1,0 +1,91 @@
+# src/main/resources/api/api.yaml
+openapi: 3.0.0
+info:
+  title: Comic Book API
+  version: 1.0.0
+  description: API pro správu komiksů a autorů
+servers:
+  - url: /api/v1
+paths:
+  /comics:
+    get:
+      summary: Seznam všech komiksů
+      operationId: getAllComics
+      responses:
+        '200':
+          description: Úspěšná odpověď
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComicBookDto'
+
+    post:
+      summary: Vytvoření nového komiksu
+      operationId: createComic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComicBookCreateDto'
+      responses:
+        '201':
+          description: Komiks vytvořen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComicBookDto'
+
+components:
+  schemas:
+    ComicBookDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        publicationYear:
+          type: integer
+        rating:
+          type: string
+          enum: [EXCELLENT, VERY_GOOD, GOOD, AVERAGE, POOR]
+        author:
+          $ref: '#/components/schemas/AuthorDto'
+
+    ComicBookCreateDto:
+      type: object
+      required:
+        - title
+        - authorId
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        publicationYear:
+          type: integer
+        rating:
+          type: string
+          enum: [EXCELLENT, VERY_GOOD, GOOD, AVERAGE, POOR]
+        authorId:
+          type: string
+          format: uuid
+
+    AuthorDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthYear:
+          type: integer

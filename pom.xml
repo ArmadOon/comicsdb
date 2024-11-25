@@ -20,6 +20,22 @@
 	</properties>
 
 	<dependencies>
+			<!-- Swagger/OpenAPI -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-data-rest</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-kotlin</artifactId>
+			<version>1.8.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -124,13 +140,17 @@
 					</dependency>
 				</dependencies>
 				<executions>
-					<execution>
-						<id>compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
+						<execution>
+							<id>compile</id>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+							<configuration>
+								<sourceDirs>
+									<sourceDir>${project.build.directory}/generated-sources/kotlin/src/main/kotlin</sourceDir>
+								</sourceDirs>
+							</configuration>
+						</execution>
 					<execution>
 						<id>test-compile</id>
 						<phase>test-compile</phase>
@@ -140,6 +160,36 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- OpenAPI Generator Plugin -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.0.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>
+							<generatorName>kotlin-spring</generatorName>
+							<apiPackage>com.example.api</apiPackage>
+							<modelPackage>com.example.model</modelPackage>
+							<configOptions>
+								<dateLibrary>java8</dateLibrary>
+								<delegatePattern>true</delegatePattern> <!-- Udržení delegátů -->
+								<useTags>false</useTags> <!-- Rozdělení metod podle controllerů -->
+								<interfaceOnly>false</interfaceOnly> <!-- Generování tříd i rozhraní -->
+								<useSpringBoot3>true</useSpringBoot3> <!-- Pro Spring Boot 3 -->
+								<documentationProvider>none</documentationProvider>
+								<annotationLibrary>none</annotationLibrary>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
 		</plugins>
 	</build>
 </project>
